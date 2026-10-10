@@ -4,6 +4,22 @@ Aetherion is a Star Wars–inspired AI learning platform — a digital holocron 
 
 > **Non-commercial fan project.** Aetherion is free and made for learning; nothing is sold. It is not affiliated with, endorsed or sponsored by Lucasfilm Ltd. or The Walt Disney Company. Star Wars and related names are trademarks of Lucasfilm Ltd.
 
+## See it in action
+
+Live at **[aetherion-kappa-two.vercel.app](https://aetherion-kappa-two.vercel.app)** (free account required).
+
+**The holocron:** spins on its own, can be grabbed and spun with the mouse or a finger, and follows the light/dark theme.
+
+![The holocron spinning, being dragged, and the theme toggle](docs/img/demo-holocron.gif)
+
+**Seeking knowledge:** name a skill, get a path of trials, and the first lesson streams in, here with a generated diagram.
+
+![Typing a topic, the trial path appearing, and a lesson streaming in](docs/img/demo-journey.gif)
+
+**The trial:** instant feedback on every answer; 3 of 4 correct passes and earns XP.
+
+![Answering quiz questions with green and red feedback, then the XP result](docs/img/demo-quiz.gif)
+
 ## How it works
 
 ![How Aetherion works](docs/img/how-it-works.png)
@@ -14,6 +30,7 @@ Aetherion is a Star Wars–inspired AI learning platform — a digital holocron 
 
 - **Accounts are required.** `proxy.ts` sends signed-out visitors to `/login`. The AI routes check the session again, so only members spend the AI quota. Postgres row-level security means each user can only read and write their own journeys.
 - **The AI key never reaches the browser.** Four route handlers (`/api/journey`, `/api/lesson`, `/api/quiz`, `/api/chat`) validate input with zod before calling Groq.
+- **Images and diagrams without extra AI calls.** The lesson names a picture in a few words (`![caption](image:human heart diagram)`); the browser finds a freely licensed match on Wikimedia Commons and credits it. Processes are drawn as Mermaid diagrams, which load only when a lesson contains one.
 - **One document per journey.** Lessons and quizzes are saved inside the journey once generated, so revisiting a trial costs no AI calls. Progress, XP and rank are always computed from it ([`src/lib/domain`](src/lib/domain), unit-tested).
 
 Both PNGs embed their draw.io source. Open one in [draw.io](https://app.diagrams.net) to edit it, then export as PNG with *Include a copy of my diagram* ticked.
