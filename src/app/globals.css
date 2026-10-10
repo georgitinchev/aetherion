@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+/* `light:` utilities apply when the user picks the light theme. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* Dark is the default theme; ThemeToggle sets data-theme="light" on <html>. */
+:root {
+  --bg: #030407;
+  --surface: #0a0c11;
+  --surface-2: #10131a;
+  --border: #1b2029;
+  --border-strong: #2a313d;
+  --text: #e9edf4;
+  --muted: #8a93a4;
+  --faint: #4d5564;
+  --holo: #5cc8ff;
+  --holo-deep: #1e86c9;
+  --gold: #ffb547;
+  --gold-deep: #b9761c;
+  --success: #3ddc97;
+  --success-deep: #1f8f5f;
+  --danger: #ff5d6c;
+  --danger-deep: #b3303d;
+  --success-bar: #06160f;
+  --danger-bar: #1a070a;
+  --code-bg: #06080c;
+  --glow: rgb(92 200 255 / 0.07);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #edf0f5;
+  --border: #dde2ea;
+  --border-strong: #c7ceda;
+  --text: #0c1220;
+  --muted: #566072;
+  --faint: #98a1b0;
+  --holo: #0284c7;
+  --holo-deep: #035a8a;
+  --gold: #b86e00;
+  --gold-deep: #7a4800;
+  --success: #0f8a5a;
+  --success-deep: #095c3b;
+  --danger: #d42c3e;
+  --danger-deep: #921b29;
+  --success-bar: #e6f6ee;
+  --danger-bar: #fdecee;
+  --code-bg: #eef1f6;
+  --glow: rgb(2 132 199 / 0.08);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-holo: var(--holo);
+  --color-holo-deep: var(--holo-deep);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-success: var(--success);
+  --color-success-deep: var(--success-deep);
+  --color-danger: var(--danger);
+  --color-danger-deep: var(--danger-deep);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(1200px 600px at 50% -10%, var(--glow), transparent 60%);
+  background-repeat: no-repeat;
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--holo) 30%, transparent);
+}
+
+/* Chunky, tactile buttons: the bottom "lip" collapses on press. */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold
+      tracking-wide uppercase transition-[transform,box-shadow,background-color,opacity] duration-100
+      select-none disabled:cursor-not-allowed disabled:opacity-40;
+    box-shadow: 0 4px 0 var(--lip, transparent);
+  }
+  .btn:not(:disabled):active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--lip, transparent);
+  }
+  .btn-primary {
+    --lip: var(--holo-deep);
+    @apply bg-holo text-bg hover:brightness-110;
+  }
+  .btn-gold {
+    --lip: var(--gold-deep);
+    @apply bg-gold text-bg hover:brightness-110;
+  }
+  .btn-success {
+    --lip: var(--success-deep);
+    @apply bg-success text-bg hover:brightness-110;
+  }
+  .btn-danger {
+    --lip: var(--danger-deep);
+    @apply bg-danger text-bg hover:brightness-110;
+  }
+  .btn-ghost {
+    --lip: var(--border);
+    @apply border-2 border-border bg-surface text-text hover:bg-surface-2;
+  }
+
+  .card {
+    @apply rounded-3xl border border-border bg-surface;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[11px] tracking-[0.25em] text-muted uppercase;
+  }
+}
+
+/* Lesson & chat markdown */
+.prose-holo {
+  @apply text-[15px] leading-7 text-text/90;
+}
+.prose-holo > * + * {
+  @apply mt-4;
+}
+.prose-holo h1,
+.prose-holo h2,
+.prose-holo h3 {
+  @apply mt-8 font-semibold tracking-tight text-text;
+}
+.prose-holo h1 {
+  @apply text-2xl;
+}
+.prose-holo h2 {
+  @apply text-xl;
+}
+.prose-holo h3 {
+  @apply text-lg;
+}
+.prose-holo a {
+  @apply text-holo underline underline-offset-4;
+}
+.prose-holo strong {
+  @apply font-semibold text-text;
+}
+.prose-holo ul {
+  @apply list-disc space-y-1.5 pl-6 marker:text-holo;
+}
+.prose-holo ol {
+  @apply list-decimal space-y-1.5 pl-6 marker:text-muted;
+}
+.prose-holo code {
+  @apply rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[13px] text-holo;
+}
+.prose-holo pre {
+  @apply overflow-x-auto rounded-2xl border border-border bg-(--code-bg) p-4 leading-6;
+}
+.prose-holo pre code {
+  @apply border-0 bg-transparent p-0 text-text/90;
+}
+.prose-holo blockquote {
+  @apply border-l-2 border-gold pl-4 text-muted italic;
+}
+.prose-holo table {
+  @apply block w-full overflow-x-auto text-sm;
+}
+.prose-holo th,
+.prose-holo td {
+  @apply border border-border px-3 py-2 text-left;
+}
+.prose-holo th {
+  @apply bg-surface-2;
+}
+
+.holocron-canvas {
+  cursor: grab;
+}
+.holocron-canvas:active {
+  cursor: grabbing;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(92 200 255 / 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 18px rgb(92 200 255 / 0);
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.streaming-caret::after {
+  content: "▍";
+  margin-left: 2px;
+  color: var(--holo);
+  animation: caret 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring,
+  .streaming-caret::after {
+    animation: none;
+  }
+}
