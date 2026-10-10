@@ -63,10 +63,13 @@ npm run build
 
 ## Deploy
 
-The Vercel project is connected to this GitHub repository: every push to `main` deploys to production, and every pull request gets a preview URL. The project needs three environment variables:
+The Vercel project is connected to this GitHub repository: every push to `main` deploys to production, and every pull request gets a preview URL. The project needs these environment variables:
 - `GROQ_API_KEY`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `CRON_SECRET`
+
+A daily [Vercel Cron](https://vercel.com/docs/cron-jobs) job (`vercel.json`) calls `/api/cron/daily`, which runs one tiny database query so the free Supabase project never auto-pauses.
 
 ## Credits
 
