@@ -6,7 +6,7 @@ import {
   toUIMessageStream,
 } from "ai";
 import { authorizedBody } from "@/lib/ai/http";
-import { proseModel, providerOptions } from "@/lib/ai/model";
+import { languageModel, providerOptions } from "@/lib/ai/model";
 import { chatInstructions } from "@/lib/ai/prompts";
 import { ChatRequestSchema } from "@/lib/schemas";
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: proseModel(),
+    model: await languageModel(),
     providerOptions,
     instructions: chatInstructions(data.context, data.context.lesson),
     messages: await convertToModelMessages(validated.data),

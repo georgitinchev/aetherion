@@ -1,6 +1,6 @@
 import { createTextStreamResponse, streamText, toTextStream } from "ai";
 import { authorizedBody } from "@/lib/ai/http";
-import { proseModel, providerOptions } from "@/lib/ai/model";
+import { languageModel, providerOptions } from "@/lib/ai/model";
 import { lessonInstructions, lessonPrompt } from "@/lib/ai/prompts";
 import { LessonRequestSchema } from "@/lib/schemas";
 
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   if (error) return error;
 
   const result = streamText({
-    model: proseModel(),
+    model: await languageModel(),
     providerOptions,
     instructions: lessonInstructions,
     prompt: lessonPrompt(data),

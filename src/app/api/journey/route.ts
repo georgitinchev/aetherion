@@ -1,6 +1,6 @@
 import { generateText, Output } from "ai";
 import { aiFailure, authorizedBody } from "@/lib/ai/http";
-import { structuredModel, structuredProviderOptions } from "@/lib/ai/model";
+import { languageModel, structuredProviderOptions } from "@/lib/ai/model";
 import { journeyInstructions, journeyPrompt } from "@/lib/ai/prompts";
 import { retryOnInvalidJson } from "@/lib/ai/retry";
 import { JourneyPlanSchema, JourneyRequestSchema } from "@/lib/schemas";
@@ -12,9 +12,10 @@ export async function POST(req: Request) {
   if (error) return error;
 
   try {
+    const model = await languageModel();
     const { output } = await retryOnInvalidJson(() =>
       generateText({
-        model: structuredModel(),
+        model,
         providerOptions: structuredProviderOptions,
         output: Output.object({ schema: JourneyPlanSchema }),
         instructions: journeyInstructions,
