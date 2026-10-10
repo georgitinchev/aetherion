@@ -34,6 +34,15 @@ Write the lesson for the current trial in GitHub-flavoured Markdown, 350-550 wor
 - 2-4 sections with "##" headings that teach the objective step by step.
 - At least one concrete example (code block if the topic is technical).
 - End with "## Key takeaways" as 3-4 bullet points.
+- Images: only if a real picture clearly helps (anatomy, places, artworks, people, physical objects,
+  labelled diagrams), add at most 2 as ![Short caption](image:precise English search terms), e.g.
+  ![The four chambers of the heart](image:human heart anatomy diagram). Never write real URLs.
+  Skip images for abstract or code-centred topics.
+- Diagrams: if a process, flow, hierarchy or architecture is central, you may add one Mermaid diagram
+  in a \`\`\`mermaid block: sequenceDiagram for exchanges between parties, otherwise flowchart TD
+  (use LR only for 5 steps or fewer). At most 8 nodes, short plain labels in quotes, no parentheses
+  or special characters inside labels.
+- Never mention Mermaid, Markdown or image searches in the lesson text itself.
 Assume the learner completed earlier trials; do not re-teach them or jump ahead to later ones.
 Output only the lesson.`;
 
