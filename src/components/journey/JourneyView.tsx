@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { use, type CSSProperties } from "react";
+import { DeleteJourney, TrashIcon } from "@/components/journey/DeleteJourney";
 import { NotFoundCard, PageSpinner } from "@/components/ui/PageSpinner";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { completedCount, journeyXp, trialStatus } from "@/lib/domain/progress";
@@ -10,7 +12,8 @@ import { useJourney } from "@/lib/store/hooks";
 
 export function JourneyView({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { journey, loading, error } = useJourney(id);
+  const router = useRouter();
+  const { journey, loading, error, remove } = useJourney(id);
 
   if (loading) return <PageSpinner />;
   if (error) return <NotFoundCard message={error} />;
@@ -33,6 +36,21 @@ export function JourneyView({ params }: { params: Promise<{ id: string }> }) {
             </span>
             <span className="text-gold">◆ {journeyXp(journey)} XP</span>
           </div>
+          <DeleteJourney
+            title={journey.title}
+            onDelete={async () => {
+              await remove();
+              router.replace("/");
+            }}
+            trigger={(open) => (
+              <button
+                onClick={open}
+                className="mt-6 inline-flex items-center gap-2 text-xs text-faint transition-colors hover:text-danger"
+              >
+                <TrashIcon className="size-3.5" /> Delete journey
+              </button>
+            )}
+          />
         </div>
         {finished && (
           <div className="card mt-4 border-gold/40 p-6 text-center">

@@ -5,7 +5,7 @@ import { useSession } from "@/components/providers/SessionProvider";
 import type { Journey } from "@/lib/domain/types";
 
 export function useJourneys() {
-  const { store } = useSession();
+  const { store, revision, markChanged } = useSession();
   const [journeys, setJourneys] = useState<Journey[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,15 +19,16 @@ export function useJourneys() {
     return () => {
       cancelled = true;
     };
-  }, [store]);
+  }, [store, revision]);
 
   const remove = useCallback(
     async (id: string) => {
       if (!store) return;
       await store.remove(id);
       setJourneys((list) => list?.filter((j) => j.id !== id) ?? null);
+      markChanged();
     },
-    [store],
+    [store, markChanged],
   );
 
   return { journeys, loading: journeys === null && !error, error, remove };
@@ -38,7 +39,7 @@ export function useJourneys() {
  * re-renders immediately and persists in the background.
  */
 export function useJourney(id: string) {
-  const { store } = useSession();
+  const { store, markChanged } = useSession();
   const [journey, setJourney] = useState<Journey | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const latest = useRef<Journey | null>(null);
@@ -67,12 +68,19 @@ export function useJourney(id: string) {
       setJourney(next);
       try {
         await store.save(next);
+        markChanged();
       } catch {
         setError("Progress could not be saved. Check your connection.");
       }
     },
-    [store],
+    [store, markChanged],
   );
 
-  return { journey, loading: journey === undefined && !error, error, update };
+  const remove = useCallback(async () => {
+    if (!store) return;
+    await store.remove(id);
+    markChanged();
+  }, [store, id, markChanged]);
+
+  return { journey, loading: journey === undefined && !error, error, update, remove };
 }

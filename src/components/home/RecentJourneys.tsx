@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DeleteJourney, TrashIcon } from "@/components/journey/DeleteJourney";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { completedCount, journeyXp } from "@/lib/domain/progress";
 import { useJourneys } from "@/lib/store/hooks";
@@ -40,15 +41,21 @@ export function RecentJourneys() {
                   </div>
                 </div>
               </Link>
-              <button
-                onClick={() => {
-                  if (confirm(`Abandon “${j.title}”? This cannot be undone.`)) remove(j.id);
-                }}
-                className="absolute top-3 right-3 rounded-full p-1.5 text-faint opacity-0 transition-opacity group-hover:opacity-100 hover:text-danger focus:opacity-100"
-                aria-label={`Delete ${j.title}`}
-              >
-                ✕
-              </button>
+              <DeleteJourney
+                title={j.title}
+                onDelete={() => remove(j.id)}
+                trigger={(open) => (
+                  // Always visible on touch screens; revealed on hover with a mouse.
+                  <button
+                    onClick={open}
+                    className="absolute top-3 right-3 rounded-full p-2 text-faint transition-[opacity,color] hover:bg-surface-2 hover:text-danger focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                    aria-label={`Delete ${j.title}`}
+                    title="Delete journey"
+                  >
+                    <TrashIcon />
+                  </button>
+                )}
+              />
             </li>
           );
         })}
