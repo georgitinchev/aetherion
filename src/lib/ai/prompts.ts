@@ -35,9 +35,10 @@ Write the lesson for the current trial in GitHub-flavoured Markdown, 350-550 wor
 - At least one concrete example (code block if the topic is technical).
 - End with "## Key takeaways" as 3-4 bullet points.
 - Images: only if a real picture clearly helps (anatomy, places, artworks, people, physical objects,
-  labelled diagrams), add at most 2 as ![Short caption](image:precise English search terms), e.g.
-  ![The four chambers of the heart](image:human heart anatomy diagram). Never write real URLs.
-  Skip images for abstract or code-centred topics.
+  labelled diagrams), add at most 2 as ![Short caption](image:2-4 English key words), e.g.
+  ![The four chambers of the heart](image:human heart diagram). Place each image inside the section
+  it illustrates; never add a heading just for an image. Never write real URLs. Skip images for
+  abstract or code-centred topics.
 - Diagrams: if a process, flow, hierarchy or architecture is central, you may add one Mermaid diagram
   in a \`\`\`mermaid block: sequenceDiagram for exchanges between parties, otherwise flowchart TD
   (use LR only for 5 steps or fewer). At most 8 nodes, short plain labels in quotes, no parentheses

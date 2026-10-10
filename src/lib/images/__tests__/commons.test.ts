@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { fromMarkdown } from "mdast-util-from-markdown";
-import { commonsSearchUrl, decodeImageQuery, encodeImageRefs, pickCommonsImage } from "../commons";
+import { candidateQueries, commonsSearchUrl, decodeImageQuery, encodeImageRefs, pickCommonsImage } from "../commons";
 
 const page = (index: number, mime: string, thumburl?: string) => ({
   index,
@@ -58,7 +58,7 @@ describe("pickCommonsImage", () => {
 describe("commonsSearchUrl", () => {
   it("searches the File namespace, allows browser CORS and asks for a thumbnail", () => {
     const url = new URL(commonsSearchUrl("human heart diagram"));
-    expect(url.searchParams.get("gsrsearch")).toBe("human heart diagram");
+    expect(url.searchParams.get("gsrsearch")).toBe("human heart diagram filetype:bitmap|drawing");
     expect(url.searchParams.get("gsrnamespace")).toBe("6");
     expect(url.searchParams.get("origin")).toBe("*");
     expect(url.searchParams.get("iiurlwidth")).toBe("900");
@@ -72,5 +72,19 @@ describe("encodeImageRefs", () => {
     const image = paragraph.children.find((c) => c.type === "image");
     expect(image && decodeImageQuery(image.url!)).toBe("human heart anatomy diagram");
     expect(md).toContain("[a link](https://x.org)");
+  });
+});
+
+describe("candidateQueries", () => {
+  it("falls back from the full phrase to key words to the first three key words", () => {
+    expect(candidateQueries("human heart chambers and major vessels diagram")).toEqual([
+      "human heart chambers and major vessels diagram",
+      "human heart chambers major vessels diagram",
+      "human heart chambers",
+    ]);
+  });
+
+  it("does not repeat identical searches for short phrases", () => {
+    expect(candidateQueries("Mona Lisa")).toEqual(["Mona Lisa"]);
   });
 });

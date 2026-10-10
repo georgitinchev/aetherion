@@ -34,6 +34,21 @@ export type CommonsImage = {
 };
 
 const API = "https://commons.wikimedia.org/w/api.php";
+/** Skip scanned books, PDFs and video, which dominate long text searches. */
+const PICTURES_ONLY = "filetype:bitmap|drawing";
+const FILLER = new Set(["a", "an", "the", "and", "or", "of", "with", "in", "on", "for", "to", "showing", "labeled", "labelled"]);
+
+/**
+ * Search phrasings to try in order: as written, without filler words, then the
+ * first three key words. Commons needs every word to match, so long phrases
+ * often find nothing while a shorter one does.
+ */
+export function candidateQueries(query: string): string[] {
+  const words = query.trim().split(/\s+/).filter(Boolean);
+  const keyWords = words.filter((w) => !FILLER.has(w.toLowerCase()));
+  const candidates = [words.join(" "), keyWords.join(" "), keyWords.slice(0, 3).join(" ")];
+  return [...new Set(candidates.filter(Boolean))];
+}
 const SUPPORTED = new Set(["image/jpeg", "image/png", "image/svg+xml", "image/webp", "image/gif"]);
 
 export function commonsSearchUrl(query: string, width = 900): string {
@@ -43,7 +58,7 @@ export function commonsSearchUrl(query: string, width = 900): string {
     origin: "*",
     generator: "search",
     gsrnamespace: "6",
-    gsrsearch: query,
+    gsrsearch: `${query} ${PICTURES_ONLY}`,
     gsrlimit: "5",
     prop: "imageinfo",
     iiprop: "url|mime|extmetadata",
@@ -100,9 +115,13 @@ export async function findCommonsImage(query: string): Promise<CommonsImage | nu
   } catch {
     // Storage unavailable: just fetch.
   }
-  const res = await fetch(commonsSearchUrl(query));
-  if (!res.ok) return null;
-  const image = pickCommonsImage(await res.json());
+  let image: CommonsImage | null = null;
+  for (const candidate of candidateQueries(query)) {
+    const res = await fetch(commonsSearchUrl(candidate));
+    if (!res.ok) break;
+    image = pickCommonsImage(await res.json());
+    if (image) break;
+  }
   try {
     localStorage.setItem(key, JSON.stringify(image));
   } catch {
