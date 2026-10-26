@@ -86,9 +86,9 @@ The Vercel project is connected to this GitHub repository: every push to `main` 
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `CRON_SECRET`
 
-A daily [Vercel Cron](https://vercel.com/docs/cron-jobs) job (`vercel.json`) calls `/api/cron/daily`, which:
-- runs one tiny database query, so the free Supabase project never auto-pauses
-- checks that at least one AI model is still served and answers. A failure shows up as a failed run under **Vercel → Cron Jobs**.
+[Vercel Cron](https://vercel.com/docs/cron-jobs) jobs (`vercel.json`) keep the app healthy:
+- `/api/cron/daily` (06:00 UTC) runs one tiny database query and checks that at least one AI model is still served and answers. A failure shows up as a failed run under **Vercel → Cron Jobs**.
+- `/api/cron/keepalive` (12:00 and 18:00 UTC) runs the same database query. Free Supabase projects pause without a few database requests a day, so three a day keep it awake.
 
 **AI models.** `AI_MODELS` lists Groq models in priority order (default `openai/gpt-oss-120b,openai/gpt-oss-20b`).
 - The app reads Groq's live model list (cached for an hour) and skips retired models automatically.
